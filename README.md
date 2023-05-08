@@ -5,12 +5,12 @@ clone the repo
 cd to routes directory
 go build 
 create .env file in the routes directory with the content:
-"
+
 PORT=8080
 API_URL= http://router.project-osrm.org/route/v1/driving/
 SERVICE_URL = /routes
 TIMEOUT = 10s
-"
+
 
 ./routes to start
 
