@@ -1,7 +1,6 @@
 # routes
-test app 
 
-clone the repo
+Clone the repo and to build:
 cd to routes directory
 go build 
 create .env file in the routes directory with the content:
