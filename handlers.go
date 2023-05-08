@@ -29,17 +29,20 @@ func (s *system) serve(w http.ResponseWriter, r *http.Request) {
 	src := queryValues.Get("src")
 	if !validateLatLong(src) {
 		badRequest(w)
+		return
 	}
 	dst := queryValues["dst"]
 	for _, d := range dst {
 		if !validateLatLong(d) {
 			log.Println("error: ", d)
 			badRequest(w)
+			return
 		}
 	}
 	resp, err := s.callApi(src, dst)
 	if err != nil {
 		internalError(w)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
