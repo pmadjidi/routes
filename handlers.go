@@ -31,15 +31,15 @@ func (s *system) serve(w http.ResponseWriter, r *http.Request) {
 		badRequest(w)
 		return
 	}
-	dst := queryValues["dst"]
-	for _, d := range dst {
-		if !validateLatLong(d) {
-			log.Println("error: ", d)
+	dsts := queryValues["dst"]
+	for _, dst := range dsts {
+		if !validateLatLong(dst) {
+			log.Println("error: ", dst)
 			badRequest(w)
 			return
 		}
 	}
-	resp, err := s.callApi(src, dst)
+	resp, err := s.callApi(src, dsts)
 	if err != nil {
 		internalError(w)
 		return

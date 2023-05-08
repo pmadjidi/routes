@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -34,7 +33,5 @@ func (s *system) apiCallHttp(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	bodyS := string(body)
-	log.Printf(bodyS)
 	return body, nil
 }
