@@ -10,6 +10,8 @@ import (
 
 //Auto generated...
 
+type any interface{}
+
 type Api struct {
 	Code   string `json:"code"`
 	Routes []struct {
