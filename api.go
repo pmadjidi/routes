@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"log"
 	"sort"
 )
@@ -55,6 +56,9 @@ func (s *system) callApi(src string, dsts []string) (*Response, error) {
 func assmebleResponseFromBodies(bodies [][]byte, src string, dsts []string) (*Response, error) {
 	var resp Response
 	var e = make(Extracted, len(dsts))
+	if len(bodies) != len(dsts) {
+		return nil, errors.New("Api data not complete")
+	}
 	for i, body := range bodies {
 		var apiData Api
 		reader := bytes.NewReader(body)

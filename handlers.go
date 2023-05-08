@@ -31,7 +31,11 @@ func (s *system) serve(w http.ResponseWriter, r *http.Request) {
 		badRequest(w)
 		return
 	}
-	dsts := queryValues["dst"]
+	dsts, ok := queryValues["dst"]
+	if !ok {
+		badRequest(w)
+		return
+	}
 	for _, dst := range dsts {
 		if !validateLatLong(dst) {
 			log.Println("error: ", dst)
