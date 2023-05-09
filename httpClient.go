@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func (s *system) apiCallHttp(url string) ([]byte, error) {
@@ -15,7 +14,7 @@ func (s *system) apiCallHttp(url string) ([]byte, error) {
 		return nil, err
 	}
 
-	ctx, cancel := context.WithTimeout(req.Context(), s.timeOut*time.Millisecond)
+	ctx, cancel := context.WithTimeout(req.Context(), s.timeOut)
 	defer cancel()
 
 	req = req.WithContext(ctx)
