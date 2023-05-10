@@ -7,7 +7,7 @@ and "./routes" to start
 curl 'http://localhost:8080/routes?src=13.388860,52.517037&dst=13.397634,52.529407&dst=13.428555,52.523219'
 to run unittests run "go test"
 
-Branch optimize, minize external api call by clustering destinations by means of geohashing coordinates and clustering based on optimization level. Implemented for fun...
+Branch optimize, minize external api calls by clustering destinations by means of geohashing coordinates and clustering based on optimization level to pick a certian length of the hash (precision) for bucket. Implemented for fun...
 
 
 
