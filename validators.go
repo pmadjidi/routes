@@ -22,3 +22,16 @@ func validateLatLong(latlong string) bool {
 	}
 	return true
 }
+
+func validateSrcDsts(src string, dsts []string) (string, []string, bool) {
+	udsts := uniqueDsts(dsts)
+	for _, dst := range udsts {
+		if !validateLatLong(dst) {
+			return EMPTYSTRING, nil, false
+		}
+	}
+	if !validateLatLong(src) {
+		return EMPTYSTRING, nil, false
+	}
+	return src, udsts, true
+}

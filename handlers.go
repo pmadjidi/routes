@@ -27,24 +27,17 @@ func (s *system) serve(w http.ResponseWriter, r *http.Request) {
 	}
 	queryValues := parsedUrl.Query()
 	src := queryValues.Get("src")
-	if !validateLatLong(src) {
-		badRequest(w)
-		return
-	}
 	dsts, ok := queryValues["dst"]
 	if !ok {
 		badRequest(w)
 		return
 	}
-	udsts := uniqueDsts(dsts)
-	for _, dst := range udsts {
-		if !validateLatLong(dst) {
-			log.Println("error: ", dst)
-			badRequest(w)
-			return
-		}
+	src, uDst, ok := validateSrcDsts(src, dsts)
+	if !ok {
+		badRequest(w)
+		return
 	}
-	resp, err := s.callApi(src, udsts)
+	resp, err := s.callApi(src, uDst)
 	if err != nil {
 		internalError(w)
 		return
