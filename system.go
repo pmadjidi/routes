@@ -3,14 +3,16 @@ package main
 import (
 	"log"
 	"os"
+	"strconv"
 	"time"
 )
 
 type system struct {
-	apiUrl     string
-	appPort    string
-	serviceUrl string
-	timeOut    time.Duration
+	apiUrl        string
+	appPort       string
+	serviceUrl    string
+	optimizeLevel int
+	timeOut       time.Duration
 }
 
 func createSys() system {
@@ -21,25 +23,39 @@ func createSys() system {
 	}
 
 	API_URL := os.Getenv("API_URL")
-	PORT := os.Getenv("PORT")
-	SERVICE_URL := os.Getenv("SERVICE_URL")
-
 	if API_URL == EMPTYSTRING {
 		log.Fatal("env API_URL not set... ")
 	}
 
+	PORT := os.Getenv("PORT")
 	if PORT == EMPTYSTRING {
 		log.Fatal("env PORT not set... ")
 	}
 
+	SERVICE_URL := os.Getenv("SERVICE_URL")
 	if SERVICE_URL == EMPTYSTRING {
 		log.Fatal("env SERVICE_URL not set... ")
 	}
+
+	optimizeLevel := os.Getenv("OPTIMIZE_LEVEL")
+	OPTIMIZE_LEVEL, err := strconv.Atoi(optimizeLevel)
+	if err != nil {
+		OPTIMIZE_LEVEL = 1
+	}
+
+	distInMeters, err := precisionForLevel(OPTIMIZE_LEVEL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Printf("Precision is set to level %d", OPTIMIZE_LEVEL)
+	log.Printf("Clustring external API calls within distance %f (in meters)", distInMeters)
 
 	return system{
 		API_URL,
 		PORT,
 		SERVICE_URL,
+		OPTIMIZE_LEVEL,
 		TIMEOUT,
 	}
 }
