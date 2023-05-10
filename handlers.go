@@ -36,14 +36,15 @@ func (s *system) serve(w http.ResponseWriter, r *http.Request) {
 		badRequest(w)
 		return
 	}
-	for _, dst := range dsts {
+	udsts := uniqueDsts(dsts)
+	for _, dst := range udsts {
 		if !validateLatLong(dst) {
 			log.Println("error: ", dst)
 			badRequest(w)
 			return
 		}
 	}
-	resp, err := s.callApi(src, dsts)
+	resp, err := s.callApi(src, udsts)
 	if err != nil {
 		internalError(w)
 		return

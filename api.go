@@ -38,6 +38,7 @@ type Api struct {
 func (s *system) callApi(src string, dsts []string) (*Response, error) {
 	bodies := make([][]byte, 0)
 	for _, d := range dsts {
+
 		// do not like to do string concatinations but this api looks not standard...
 		url := s.apiUrl + src + ";" + d + "?overview=false"
 		log.Println("calling: ", url)
