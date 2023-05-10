@@ -40,7 +40,13 @@ func createSys() system {
 	optimizeLevel := os.Getenv("OPTIMIZE_LEVEL")
 	OPTIMIZE_LEVEL, err := strconv.Atoi(optimizeLevel)
 	if err != nil {
-		OPTIMIZE_LEVEL = 1
+		OPTIMIZE_LEVEL = MINOPTLEVEL
+	}
+
+	if OPTIMIZE_LEVEL > MAXOPTLEVEL {
+		OPTIMIZE_LEVEL = MAXOPTLEVEL
+		log.Printf("optimization level above (%d) setting now to (%d)", MAXOPTLEVEL, MINOPTLEVEL)
+
 	}
 
 	distInMeters, err := precisionForLevel(OPTIMIZE_LEVEL)

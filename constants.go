@@ -2,6 +2,6 @@ package main
 
 const (
 	EMPTYSTRING string = ""
-	MINOPTLEVEL        = 0
-	MAXOPTLEVEL        = 10
+	MINOPTLEVEL        = 1
+	MAXOPTLEVEL        = 12
 )
