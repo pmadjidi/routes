@@ -45,7 +45,13 @@ func createSys() system {
 
 	if OPTIMIZE_LEVEL > MAXOPTLEVEL {
 		OPTIMIZE_LEVEL = MAXOPTLEVEL
-		log.Printf("optimization level above (%d) setting now to (%d)", MAXOPTLEVEL, MINOPTLEVEL)
+		log.Printf("optimization level above (%d) setting now to (%d)", MAXOPTLEVEL, OPTIMIZE_LEVEL)
+
+	}
+
+	if OPTIMIZE_LEVEL < MINOPTLEVEL {
+		OPTIMIZE_LEVEL = MINOPTLEVEL
+		log.Printf("optimization level above (%d) setting now to (%d)", MINOPTLEVEL, OPTIMIZE_LEVEL)
 
 	}
 
