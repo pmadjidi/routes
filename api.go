@@ -87,7 +87,7 @@ func (s *system) callApi(src string, dsts []string) (*Response, error) {
 
 func assmebleResponseFromBodies(bodies [][]byte, src string, clusteredDsts map[string][]string, sizeDst int) (*Response, error) {
 	var resp Response
-	var e = make(Extracted, sizeDst)
+	var extracted = make(Extracted, sizeDst)
 	if len(bodies) != len(clusteredDsts) {
 		return nil, errors.New("Api data not complete")
 	}
@@ -106,18 +106,18 @@ func assmebleResponseFromBodies(bodies [][]byte, src string, clusteredDsts map[s
 		}
 		for _, dst := range dsts {
 			log.Println("assembling for dst: ", dst)
-			e[extractedIndex].Destination = dst
-			e[extractedIndex].Duration = apiData.Routes[0].Duration
-			e[extractedIndex].Distance = apiData.Routes[0].Distance
+			extracted[extractedIndex].Destination = dst
+			extracted[extractedIndex].Duration = apiData.Routes[0].Duration
+			extracted[extractedIndex].Distance = apiData.Routes[0].Distance
 			extractedIndex += 1
 		}
 		bodyIndex += 1
 	}
 
-	sort.SliceStable(e, func(i, j int) bool {
-		return e[i].Duration < e[j].Duration
+	sort.SliceStable(extracted, func(i, j int) bool {
+		return extracted[i].Duration < extracted[j].Duration
 	})
 	resp.Source = src
-	resp.Routes = e
+	resp.Routes = extracted
 	return &resp, nil
 }
