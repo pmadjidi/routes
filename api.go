@@ -35,25 +35,31 @@ type Api struct {
 	} `json:"waypoints"`
 }
 
-func (s *system) callApi(src string, dsts []string) (*Response, error) {
+func (s *system) callApiConcurrent(src string, dsts []string) (*Response, error) {
+	requests := make([]*ApiPayload, 0)
 	bodies := make([][]byte, 0)
-	for _, d := range dsts {
 
-		// do not like to do string concatinations but this api looks not standard...
-		url := s.apiUrl + src + ";" + d + "?overview=false"
-		log.Println("calling: ", url)
-		thisBody, err := s.apiCallHttp(url)
-		if err != nil {
-			return nil, err
-		}
-		bodies = append(bodies, thisBody)
+	for _, dst := range dsts {
+		ap := newApiPayload(src, dst)
+		s.apiRequest <- ap
+		requests = append(requests, ap)
 	}
+
+	for _, request := range requests {
+		resp := <-request.resp
+		if !resp.inError {
+			bodies = append(bodies, resp.body)
+		} else {
+			bodies = append(bodies, []byte(EMPTYSTRING))
+		}
+	}
+
 	resp, err := assmebleResponseFromBodies(bodies, src, dsts)
 	if err != nil {
 		return nil, err
 	}
-
 	return resp, nil
+
 }
 
 func assmebleResponseFromBodies(bodies [][]byte, src string, dsts []string) (*Response, error) {
@@ -67,16 +73,17 @@ func assmebleResponseFromBodies(bodies [][]byte, src string, dsts []string) (*Re
 		reader := bytes.NewReader(body)
 		err := json.NewDecoder(reader).Decode(&apiData)
 
-		// all or nothing fail on partial info.... not sure how to handle partial fail...
 		if err != nil {
 			log.Println("assmebleResponseFromBodies: ", err.Error())
-			return nil, err
+			extracted[i].Destination = dsts[i]
+			extracted[i].Duration = ERROR
+			extracted[i].Distance = ERROR
+		} else {
+			extracted[i].Destination = dsts[i]
+			extracted[i].Duration = apiData.Routes[0].Duration
+			extracted[i].Distance = apiData.Routes[0].Distance
 		}
-		extracted[i].Destination = dsts[i]
-		extracted[i].Duration = apiData.Routes[0].Duration
-		extracted[i].Distance = apiData.Routes[0].Distance
 	}
-
 	sort.SliceStable(extracted, func(i, j int) bool {
 		return extracted[i].Duration < extracted[j].Duration
 	})

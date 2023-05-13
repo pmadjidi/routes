@@ -6,11 +6,16 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("no .env found...")
 	}
+}
+
+func main() {
 	sys := createSys()
+	sys.initWorkers()
+	sys.createTerminationHandler()
 	sys.startHttp()
 }
