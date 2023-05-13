@@ -12,3 +12,7 @@ To use this repository, follow the instructions below:
 ## Branch: optimize
 
 The `optimize` branch aims to minimize external API calls by clustering destinations. This is achieved by geohashing coordinates and clustering based on the optimization level. The algorithm selects a certain length of the hash (precision) for bucketing destinations. Please note that this implementation is done purely for fun and experimentation purposes.
+
+## Branch: concurrent
+
+Branch "concurrent" is a multi-processor implementation for the "routes" service. The aim of this implementation is to handle external API calls in parallel as much as possible.
