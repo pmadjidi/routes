@@ -41,11 +41,9 @@ func (s *system) createTerminationHandler() {
 func createSys() system {
 	timeout := os.Getenv("TIMEOUT")
 	TIMEOUT, err := time.ParseDuration(timeout)
-
 	if err != nil {
 		TIMEOUT = 10 * time.Second
 	}
-
 	API_URL := os.Getenv("API_URL")
 	PORT := os.Getenv("PORT")
 	SERVICE_URL := os.Getenv("SERVICE_URL")
@@ -56,7 +54,7 @@ func createSys() system {
 	} else {
 		BUFFER_REQUEST = max(BUFFER_REQUEST, MAXBUFFER)
 	}
-
+	log.Printf("Setting number of buffered requests to: %d\n", BUFFER_REQUEST)
 	if API_URL == EMPTYSTRING {
 		log.Fatal("env API_URL not set... ")
 	}
@@ -68,11 +66,8 @@ func createSys() system {
 	if SERVICE_URL == EMPTYSTRING {
 		log.Fatal("env SERVICE_URL not set... ")
 	}
-
 	NPROCESSORS := runtime.NumCPU()
-
 	log.Printf("Number of processors: %d\n", NPROCESSORS)
-
 	sys := system{
 		API_URL,
 		PORT,
