@@ -12,3 +12,10 @@ func uniqueDsts(dsts []string) []string {
 	}
 	return uDsts
 }
+
+func max(x, y int) int {
+	if x < y {
+		return y
+	}
+	return x
+}

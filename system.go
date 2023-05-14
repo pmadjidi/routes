@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"strconv"
 	"syscall"
 	"time"
 )
@@ -48,6 +49,13 @@ func createSys() system {
 	API_URL := os.Getenv("API_URL")
 	PORT := os.Getenv("PORT")
 	SERVICE_URL := os.Getenv("SERVICE_URL")
+	bufferRequet := os.Getenv("BUFFER_REQUEST")
+	BUFFER_REQUEST, err := strconv.Atoi(bufferRequet)
+	if err != nil {
+		BUFFER_REQUEST = 0
+	} else {
+		BUFFER_REQUEST = max(BUFFER_REQUEST, MAXBUFFER)
+	}
 
 	if API_URL == EMPTYSTRING {
 		log.Fatal("env API_URL not set... ")
@@ -71,7 +79,7 @@ func createSys() system {
 		SERVICE_URL,
 		TIMEOUT,
 		NPROCESSORS,
-		make(chan *ApiPayload, NPROCESSORS),
+		make(chan *ApiPayload, NPROCESSORS+BUFFER_REQUEST),
 		make(chan struct{}),
 		nil,
 	}
