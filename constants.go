@@ -2,6 +2,6 @@ package main
 
 const (
 	EMPTYSTRING string = ""
-	ERROR              = -1
+	ERROR              = 1000000
 	MAXBUFFER          = 1000
 )
