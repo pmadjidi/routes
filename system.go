@@ -61,17 +61,17 @@ func createSys() system {
 		log.Fatal("env SERVICE_URL not set... ")
 	}
 
-	procNumber := runtime.NumCPU()
+	NPROCESSORS := runtime.NumCPU()
 
-	log.Printf("Number of processors: %d\n", procNumber)
+	log.Printf("Number of processors: %d\n", NPROCESSORS)
 
 	sys := system{
 		API_URL,
 		PORT,
 		SERVICE_URL,
 		TIMEOUT,
-		procNumber,
-		make(chan *ApiPayload, procNumber),
+		NPROCESSORS,
+		make(chan *ApiPayload, NPROCESSORS),
 		make(chan struct{}),
 		nil,
 	}
