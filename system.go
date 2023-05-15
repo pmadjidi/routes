@@ -52,7 +52,10 @@ func createSys() system {
 	if err != nil {
 		BUFFER_REQUEST = 0
 	} else {
-		BUFFER_REQUEST = max(BUFFER_REQUEST, MAXBUFFER)
+		BUFFER_REQUEST = min(BUFFER_REQUEST, MAXBUFFER)
+		if BUFFER_REQUEST < MINBUFFER {
+			BUFFER_REQUEST = MINBUFFER
+		}
 	}
 	log.Printf("Setting number of buffered requests to: %d\n", BUFFER_REQUEST)
 	if API_URL == EMPTYSTRING {
