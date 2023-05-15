@@ -43,8 +43,7 @@ func (s *system) callApiConcurrent(src latlong, dsts []latlong) (*Response, erro
 	// get cached bodies here...
 
 	if s.enableCache {
-		for i, dst := range dsts {
-			log.Println("couting... ", i)
+		for _, dst := range dsts {
 			cacheReq := s.newCacheRequest(src, dst)
 			s.cacheRequest[cacheReq.bucket] <- cacheReq
 			resp := <-cacheReq.resp
