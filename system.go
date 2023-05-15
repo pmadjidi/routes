@@ -70,7 +70,7 @@ func createSys() system {
 		log.Fatal("env SERVICE_URL not set... ")
 	}
 	NPROCESSORS := runtime.NumCPU()
-	log.Printf("Number of processors: %d\n", NPROCESSORS)
+	log.Printf("Number of processors detected: %d\n", NPROCESSORS)
 	sys := system{
 		API_URL,
 		PORT,
@@ -93,6 +93,7 @@ func createSys() system {
 }
 
 func (s *system) initWorkers() {
+	log.Printf("starting one worker for each processeor total (%d)....\n", s.procNumber)
 	for i := 0; i < s.procNumber; i++ {
 		go s.httpWorkers(i)
 	}
