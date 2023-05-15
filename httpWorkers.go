@@ -21,7 +21,7 @@ loop:
 				thisCacheEntrie := newCacheEntry(thisBody)
 				cacheRequest := s.newCacheRequest(req.route.src, req.route.dst)
 				cacheRequest.val = thisCacheEntrie
-				s.setCache[*&cacheRequest.bucket] <- cacheRequest
+				s.setCache[cacheRequest.bucket] <- cacheRequest
 			}
 		case <-s.shutDown:
 			break loop
