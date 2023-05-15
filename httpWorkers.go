@@ -18,12 +18,10 @@ loop:
 			} else {
 				req.body = thisBody
 				req.resp <- req
-				key := getKeyFromLatLong(req.route.src, req.route.dst)
-				bucket := s.hash(key)
 				thisCacheEntrie := newCacheEntry(thisBody)
 				cacheRequest := s.newCacheRequest(req.route.src, req.route.dst)
 				cacheRequest.val = thisCacheEntrie
-				s.setCache[bucket] <- cacheRequest
+				s.setCache[*&cacheRequest.bucket] <- cacheRequest
 			}
 		case <-s.shutDown:
 			break loop

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"sort"
 )
@@ -44,7 +43,6 @@ func (s *system) callApiConcurrent(src latlong, dsts []latlong) (*Response, erro
 	// get cached bodies here...
 
 	if s.enableCache {
-		fmt.Println("444444444444444444")
 		for i, dst := range dsts {
 			log.Println("couting... ", i)
 			cacheReq := s.newCacheRequest(src, dst)
@@ -56,11 +54,9 @@ func (s *system) callApiConcurrent(src latlong, dsts []latlong) (*Response, erro
 				askApiForTheseDsts = append(askApiForTheseDsts, dst)
 			}
 		}
-		fmt.Println("55555555555555555")
 	} else {
 		askApiForTheseDsts = dsts
 	}
-	fmt.Println("666666666666")
 	for _, dst := range askApiForTheseDsts {
 		ap := newApiPayload(src, dst)
 		s.apiRequest <- ap
