@@ -33,12 +33,12 @@ func (s *system) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		badRequest(w)
 		return
 	}
-	src, uDst, ok := validateSrcDsts(src, dsts)
+	vSrc, vUdst, ok := validateSrcDsts(src, dsts)
 	if !ok {
 		badRequest(w)
 		return
 	}
-	resp, err := s.callApiConcurrent(src, uDst)
+	resp, err := s.callApiConcurrent(vSrc, vUdst)
 	if err != nil {
 		internalError(w)
 		return

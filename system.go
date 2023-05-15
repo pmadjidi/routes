@@ -11,15 +11,25 @@ import (
 	"time"
 )
 
+type latlong string
+
 type system struct {
-	apiUrl     string
-	appPort    string
-	serviceUrl string
-	timeOut    time.Duration
-	procNumber int
-	apiRequest chan *ApiPayload
-	shutDown   chan struct{}
-	hServer    *http.Server
+	apiUrl       string
+	appPort      string
+	serviceUrl   string
+	timeOut      time.Duration
+	procNumber   int
+	apiRequest   chan *ApiPayload
+	cacheRequest []chan *CacheRequest
+	setCache     []chan *CacheRequest
+	shutDown     chan struct{}
+	hServer      *http.Server
+	enableCache  bool
+}
+
+func (s *system) numberOfSubsystems() int {
+	// once for webworkers, and once for cache processors...
+	return 2 * s.procNumber
 }
 
 func (s *system) createTerminationHandler() {
@@ -28,7 +38,7 @@ func (s *system) createTerminationHandler() {
 	go func() {
 		select {
 		case <-term:
-			for i := 0; i < s.procNumber; i++ {
+			for i := 0; i < s.numberOfSubsystems(); i++ {
 				s.shutDown <- struct{}{}
 			}
 			break
@@ -57,6 +67,17 @@ func createSys() system {
 			BUFFER_REQUEST = MINBUFFER
 		}
 	}
+
+	enableCache := os.Getenv("ENABLE_CACHE")
+	ENABLE_CACHE, err := strconv.ParseBool(enableCache)
+	if err != nil {
+		ENABLE_CACHE = false
+	} else {
+		if ENABLE_CACHE {
+			log.Println("Enabling caching for DSTs...")
+		}
+	}
+
 	log.Printf("Setting number of buffered requests to: %d\n", BUFFER_REQUEST)
 	if API_URL == EMPTYSTRING {
 		log.Fatal("env API_URL not set... ")
@@ -78,8 +99,18 @@ func createSys() system {
 		TIMEOUT,
 		NPROCESSORS,
 		make(chan *ApiPayload, NPROCESSORS+BUFFER_REQUEST),
+		make([]chan *CacheRequest, 0),
+		make([]chan *CacheRequest, 0),
 		make(chan struct{}),
 		nil,
+		ENABLE_CACHE,
+	}
+
+	for i := 0; i < sys.procNumber; i++ {
+		chreq := make(chan *CacheRequest, sys.procNumber)
+		chset := make(chan *CacheRequest, sys.procNumber)
+		sys.cacheRequest = append(sys.cacheRequest, chreq)
+		sys.setCache = append(sys.setCache, chset)
 	}
 
 	mux := http.NewServeMux()
@@ -92,9 +123,12 @@ func createSys() system {
 	return sys
 }
 
-func (s *system) initWorkers() {
+func (s *system) initSubSystems() {
 	log.Printf("starting one worker for each processeor total (%d)....\n", s.procNumber)
 	for i := 0; i < s.procNumber; i++ {
 		go s.httpWorkers(i)
+		if s.enableCache {
+			go s.cacheProcessor(i)
+		}
 	}
 }

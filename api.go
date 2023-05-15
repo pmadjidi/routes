@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"sort"
 )
@@ -35,11 +36,32 @@ type Api struct {
 	} `json:"waypoints"`
 }
 
-func (s *system) callApiConcurrent(src string, dsts []string) (*Response, error) {
+func (s *system) callApiConcurrent(src latlong, dsts []latlong) (*Response, error) {
 	requests := make([]*ApiPayload, 0)
 	bodies := make([][]byte, 0)
+	askApiForTheseDsts := make([]latlong, 0)
 
-	for _, dst := range dsts {
+	// get cached bodies here...
+
+	if s.enableCache {
+		fmt.Println("444444444444444444")
+		for i, dst := range dsts {
+			log.Println("couting... ", i)
+			cacheReq := s.newCacheRequest(src, dst)
+			s.cacheRequest[cacheReq.bucket] <- cacheReq
+			resp := <-cacheReq.resp
+			if resp != nil {
+				bodies = append(bodies, resp)
+			} else {
+				askApiForTheseDsts = append(askApiForTheseDsts, dst)
+			}
+		}
+		fmt.Println("55555555555555555")
+	} else {
+		askApiForTheseDsts = dsts
+	}
+	fmt.Println("666666666666")
+	for _, dst := range askApiForTheseDsts {
 		ap := newApiPayload(src, dst)
 		s.apiRequest <- ap
 		requests = append(requests, ap)
@@ -62,11 +84,11 @@ func (s *system) callApiConcurrent(src string, dsts []string) (*Response, error)
 
 }
 
-func assmebleResponseFromBodies(bodies [][]byte, src string, dsts []string) (*Response, error) {
+func assmebleResponseFromBodies(bodies [][]byte, src latlong, dsts []latlong) (*Response, error) {
 	var resp Response
 	var extracted = make(Extracted, len(dsts))
 	if len(bodies) != len(dsts) {
-		return nil, errors.New("Api data not complete")
+		return nil, errors.New("api data not complete")
 	}
 	for i, body := range bodies {
 		var apiData Api

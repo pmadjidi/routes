@@ -15,7 +15,7 @@ func init() {
 
 func main() {
 	sys := createSys()
-	sys.initWorkers()
+	sys.initSubSystems()
 	sys.createTerminationHandler()
 	sys.startHttp()
 }

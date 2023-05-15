@@ -8,7 +8,7 @@ loop:
 	for {
 		select {
 		case req := <-s.apiRequest:
-			url := s.apiUrl + req.route.src + ";" + req.route.dst + "?overview=false"
+			url := s.apiUrl + string(req.route.src) + ";" + string(req.route.dst) + "?overview=false"
 			log.Printf("worker (%d) calling url (%s)\n ", workerId, url)
 			thisBody, err := s.apiCallHttp(url)
 			if err != nil {
@@ -18,6 +18,12 @@ loop:
 			} else {
 				req.body = thisBody
 				req.resp <- req
+				key := getKeyFromLatLong(req.route.src, req.route.dst)
+				bucket := s.hash(key)
+				thisCacheEntrie := newCacheEntry(thisBody)
+				cacheRequest := s.newCacheRequest(req.route.src, req.route.dst)
+				cacheRequest.val = thisCacheEntrie
+				s.setCache[bucket] <- cacheRequest
 			}
 		case <-s.shutDown:
 			break loop

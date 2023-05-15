@@ -8,6 +8,6 @@ type ApiPayload struct {
 	resp    chan *ApiPayload
 }
 
-func newApiPayload(src, dst string) *ApiPayload {
+func newApiPayload(src, dst latlong) *ApiPayload {
 	return &ApiPayload{Route{src, dst}, false, "", nil, make(chan *ApiPayload, 1)}
 }

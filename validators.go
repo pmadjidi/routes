@@ -7,8 +7,8 @@ import (
 
 //Unsure of float is enough or float64 should be used
 
-func validateLatLong(latlong string) bool {
-	coordinates := strings.Split(latlong, ",")
+func validateLatLong(lt latlong) bool {
+	coordinates := strings.Split(string(lt), ",")
 	if len(coordinates) != 2 {
 		return false
 	}
@@ -23,15 +23,16 @@ func validateLatLong(latlong string) bool {
 	return true
 }
 
-func validateSrcDsts(src string, dsts []string) (string, []string, bool) {
+func validateSrcDsts(src string, dsts []string) (latlong, []latlong, bool) {
 	udsts := uniqueDsts(dsts)
 	for _, dst := range udsts {
 		if !validateLatLong(dst) {
-			return EMPTYSTRING, nil, false
+			return latlong(EMPTYSTRING), nil, false
 		}
 	}
-	if !validateLatLong(src) {
-		return EMPTYSTRING, nil, false
+
+	if !validateLatLong(latlong(src)) {
+		return latlong(EMPTYSTRING), nil, false
 	}
-	return src, udsts, true
+	return latlong(src), udsts, true
 }

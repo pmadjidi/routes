@@ -8,8 +8,8 @@ func TestAssmebleResponseFromBodies(t *testing.T) {
 	bodies := make([][]byte, 0)
 	bodies = append(bodies, []byte(body1))
 	bodies = append(bodies, []byte(body2))
-	source := "13.388860,52.517037"
-	destination := []string{"13.397634,52.529407", "13.428555,52.523219"}
+	var source latlong = "13.388860,52.517037"
+	destination := []latlong{"13.397634,52.529407", "13.428555,52.523219"}
 	resp, err := assmebleResponseFromBodies(bodies, source, destination)
 	if err != nil {
 		t.Fatalf(err.Error())
@@ -25,7 +25,7 @@ func TestAssmebleResponseFromBodies(t *testing.T) {
 	body := bodies[0]
 	bodies[0] = bodies[1]
 	bodies[1] = body
-	destination = []string{"13.428555,52.523219", "13.397634,52.529407"}
+	destination = []latlong{"13.428555,52.523219", "13.397634,52.529407"}
 	resp, err = assmebleResponseFromBodies(bodies, source, destination)
 	if err != nil {
 		t.Fatalf(err.Error())
