@@ -16,3 +16,7 @@ The `optimize` branch aims to minimize external API calls by clustering destinat
 ## Branch: concurrent
 
 Branch "concurrent" is a multi-processor implementation for the "routes" service. The aim of this implementation is to handle external API calls in parallel as much as possible.
+
+## Branch: concurrentWithCache
+
+Branch "concurrentWithCache" is the the same as branch "concurrent" with a configurable distributed cache 
