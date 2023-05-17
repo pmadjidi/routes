@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestAssmebleResponseFromBodies(t *testing.T) {
 	body1 := `{"code":"Ok","routes":[{"legs":[{"steps":[],"summary":"","weight":263.1,"duration":260.2,"distance":1886.3}],"weight_name":"routability","weight":263.1,"duration":260.2,"distance":1886.3}],"waypoints":[{"hint":"Dv8JgCp3moUXAAAABQAAAAAAAAAgAAAAIXRPQYXNK0AAAAAAcPePQQsAAAADAAAAAAAAABAAAAA6-wAA_kvMAKlYIQM8TMwArVghAwAA7wrXLH_K","distance":4.231521214,"name":"Friedrichstraße","location":[13.388798,52.517033]},{"hint":"JEvdgVmFiocGAAAACgAAAAAAAAB3AAAAppONQOodwkAAAAAA8TeEQgYAAAAKAAAAAAAAAHcAAAA6-wAAfm7MABiJIQOCbswA_4ghAwAAXwXXLH_K","distance":2.795148358,"name":"Torstraße","location":[13.39763,52.529432]}]}`
@@ -46,8 +49,8 @@ func TestAssmebleResponseFromBodiesMissedReq(t *testing.T) {
 	bodies := make([][]byte, 0)
 	bodies = append(bodies, []byte(body1))
 	bodies = append(bodies, []byte(body2))
-	source := "13.388860,52.517037"
-	destination := []string{"13.397634,52.529407", "13.428555,52.523219"}
+	var source latlong = "13.388860,52.517037"
+	destination := []latlong{"13.397634,52.529407", "13.428555,52.523219"}
 	resp, err := assmebleResponseFromBodies(bodies, source, destination)
 	if err != nil {
 		fmt.Println(err.Error())
