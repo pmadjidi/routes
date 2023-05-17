@@ -113,10 +113,13 @@ func assmebleResponseFromBodies(bodies [][]byte, src string, clusteredDsts map[s
 		}
 		bodyIndex += 1
 	}
-
 	sort.SliceStable(extracted, func(i, j int) bool {
+		if extracted[i].Duration == extracted[j].Duration {
+			return extracted[i].Distance < extracted[j].Distance
+		}
 		return extracted[i].Duration < extracted[j].Duration
 	})
+
 	resp.Source = src
 	resp.Routes = extracted
 	return &resp, nil
